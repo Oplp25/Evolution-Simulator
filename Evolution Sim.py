@@ -14,10 +14,10 @@ def getColour():
         if i.colour==colour:
             getColour()
     return colour
-class species(object):
+class species():
     def __init__(self,size,speed,maxhp,attack,defense,saturation,lifespan,canEatMeat,colour=0):
-                if colour==0:
-            self.colour=getColour
+        if colour==0:
+            self.colour=getColour()
         else:
             self.colour=colour
         self.size=size
@@ -31,22 +31,23 @@ class species(object):
         self.canEatMeat=canEatMeat
     
     def callFunction(self):
-        return self.size,self,speed,self.maxhp,self,attack,self.defense,self.saturation,self.lifespan,self.canEatMeat,self.x,self.y,self.colour
+        return self.size,self.speed,self.maxhp,self.attack,self.defense,self.saturation,self.lifespan,self.canEatMeat,self,self.colour
 class animal(object):
-    def __init__(self,size,speed,maxhp,attack,defense,saturation,lifespan,canEatMeat,species,x=None,y=None):
+    def __init__(self,attributes,x=None,y=None):
         
-        self.size=size
-        self.speed=speed
-        self.hp=maxhp
+        self.size=attributes[0]
+        self.colour=attributes[9]
+        self.speed=attributes[1]
+        self.hp=attributes[2]
         self.maxhp=self.hp
-        self.attack=attack
-        self.defense=defense
-        self.saturation=saturation
-        self.lifespan=lifespan
-        self.canEatMeat=canEatMeat
+        self.attack=attributes[3]
+        self.defense=attributes[4]
+        self.saturation=attributes[5]
+        self.lifespan=attributes[6]
+        self.canEatMeat=attributes[7]
         self.x=x
         self.y=y
-        elf.species=species
+        self.species=attributes[8]
         self.age=0
     def move(self):
         pass
@@ -78,6 +79,10 @@ drawGrid()
 pygame.display.update()
 speciesList=[species(1,4,2,0,1,1,6,False,(210,180,140)),species(3,3,6,3,3,3,24,True,(255,128,0))]
 animalList=[]
+for i in range(25):
+    x=speciesList[0].callFunction()
+    animalList.append(animal(speciesList[0].callFunction(),randint(0,100),randint(0,100)))
+    print(animalList[-1].x,animalList[-1].y)
 while True:
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
