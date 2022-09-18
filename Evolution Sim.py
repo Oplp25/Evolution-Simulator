@@ -1,4 +1,4 @@
-import pygame,time
+import pygame,time,math
 from random import *
 
 pygame.init()
@@ -28,7 +28,13 @@ class species():
         self.saturation=saturation
         self.lifespan=lifespan
         self.canEatMeat=canEatMeat
-    
+        self.killList=[]
+        
+    def updateKillList(self):
+        self.killList=[]
+        for i in speciesList:
+            if i.size<=self.size and i!=self:
+                self.killList.append(i)
     def callFunction(self):
         return self.size,self.speed,self.maxhp,self.attack,self.defense,self.saturation,self.lifespan,self.canEatMeat,self,self.colour
 class animal(object):
@@ -48,22 +54,67 @@ class animal(object):
         self.y=y
         self.species=attributes[8]
         self.age=0
-    
+        
     def draw(self):
         pygame.draw.rect(win,self.colour,(self.x*9+1,self.y*9+1,8,8))
     def move(self):
-        for i in range(self.speed):
-            x=randint(1,4)
-            if x==1:
-                self.x+=1
-            elif x==2:
-                self.x-=1
-            elif x==3:
-                self.y+=1
-            else:
-                self.y-=1
-    def eat(self):
-        pass
+        if self.canEatMeat:
+            target=animalList[0]
+            targetDist=abs(self.x-animalList[0].x+self.y-animalList[0].y)
+            for i in animalList:
+                if i.species in self.species.killList:
+                    if abs(self.x-i.x+self.y-i.y)<targetDist:
+                        target=i
+                        targetDist=abs(self.x-i.x+self.y-i.y)
+            tick=0
+            for i in range(self.speed):
+                if tick==0 and self.x!=target.x or tick==1 and self.y==target.y:
+                    if self.x<=target.x:
+                        self.x+=1
+                    elif self.x>=target.x:
+                        self.x-=1
+                    tick=1
+                elif tick==1 and self.y!=target.y or tick==0 and self.x==target.x:
+                    if self.y<=target.y:
+                        self.y+=1
+                    elif self.y>=target.y:
+                        self.y-=1
+                    tick=0
+
+
+
+        else:
+            '''for i in range(self.speed):
+                x=randint(1,4)
+                if x==1:
+                    if self.x+1>=90:
+                        pass
+                    else:
+                        self.x+=1
+                elif x==2:
+                    if self.x-1<0:
+                        pass
+                    else:
+                        self.x-=1
+                elif x==3:
+                    if self.y+1>=90:
+                        pass
+                    else:
+                        self.y+=1
+                else:
+                    if self.y-1<0:
+                        pass
+                    else:
+                        self.y-=1'''
+    def checkEat(self):
+        if self.canEatMeat:
+            for i in animalList:
+                if i.species in self.species.killList:
+                    if i.x==self.x and i.y==self.y:
+                        self.eat(i)
+
+    def eat(self,animal):
+        animalList.remove(animal)
     
     def attack(self,defender):
         pass
@@ -76,7 +127,7 @@ class animal(object):
     
     def die():
         pass
-    
+                
     def checkIfDie(self):
         pass
 
@@ -88,6 +139,9 @@ def drawGrid():
 drawGrid()
 pygame.display.update()
 speciesList=[species(1,4,2,0,1,1,6,False,(210,180,140)),species(3,3,6,3,3,3,24,True,(255,128,0))]
+for i in speciesList:
+    if i.canEatMeat:
+        i.updateKillList()
 animalList=[]
 clock=pygame.time.Clock()
 fps=5
@@ -99,6 +153,7 @@ def update():
     drawGrid()
     for i in animalList:
         i.move()
+        i.checkEat()
         i.draw()
     pygame.display.update()
 while True:
