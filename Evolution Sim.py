@@ -60,12 +60,12 @@ class animal(object):
     def move(self):
         if self.canEatMeat:
             target=animalList[0]
-            targetDist=abs(self.x-animalList[0].x+self.y-animalList[0].y)
+            targetDist=abs(self.x-animalList[0].x)+abs(self.y-animalList[0].y)
             for i in animalList:
                 if i.species in self.species.killList:
                     if abs(self.x-i.x+self.y-i.y)<targetDist:
                         target=i
-                        targetDist=abs(self.x-i.x+self.y-i.y)
+                        targetDist=abs(self.x-i.x)+abs(self.y-i.y)
             tick=0
             for i in range(self.speed):
                 if tick==0 and self.x!=target.x or tick==1 and self.y==target.y:
@@ -84,7 +84,7 @@ class animal(object):
 
 
         else:
-            '''for i in range(self.speed):
+            for i in range(self.speed):
                 x=randint(1,4)
                 if x==1:
                     if self.x+1>=90:
@@ -105,7 +105,7 @@ class animal(object):
                     if self.y-1<0:
                         pass
                     else:
-                        self.y-=1'''
+                        self.y-=1
     def checkEat(self):
         if self.canEatMeat:
             for i in animalList:
@@ -158,9 +158,13 @@ def update():
     pygame.display.update()
 while True:
     clock.tick(fps)
-    deltatime=clock.tick(60)/1024
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             pygame.quit()
             exit()
+    keys=pygame.key.get_pressed()
+    if keys[pygame.K_UP]and fps<120:
+        fps+=5
+    elif keys[pygame.K_DOWN] and fps>5:
+        fps-=5
     update()
