@@ -14,7 +14,7 @@ def getColour():
             getColour()
     return colour
 class species():
-    def __init__(self,size,speed,maxhp,attack,defense,saturation,lifespan,canEatMeat,colour=0):
+    def __init__(self,size,speed,maxhp,attack,defense,saturation,lifespan,breedingInterval,canEatMeat,colour=0):
         if colour==0:
             self.colour=getColour()
         else:
@@ -28,6 +28,7 @@ class species():
         self.saturation=saturation
         self.lifespan=lifespan
         self.canEatMeat=canEatMeat
+        self.breedingInterval=breedingInterval
         self.killList=[]
         
     def updateKillList(self):
@@ -36,12 +37,12 @@ class species():
             if i.size<=self.size and i!=self:
                 self.killList.append(i)
     def callFunction(self):
-        return self.size,self.speed,self.maxhp,self.attack,self.defense,self.saturation,self.lifespan,self.canEatMeat,self,self.colour
+        return self.size,self.speed,self.maxhp,self.attack,self.defense,self.saturation,self.lifespan,self.breedingInterval,self.canEatMeat,self,self.colour
 class animal(object):
     def __init__(self,attributes,x=None,y=None):
         
         self.size=attributes[0]
-        self.colour=attributes[9]
+        self.colour=attributes[10]
         self.speed=attributes[1]
         self.hp=attributes[2]
         self.maxhp=self.hp
@@ -49,10 +50,10 @@ class animal(object):
         self.defense=attributes[4]
         self.saturation=attributes[5]
         self.lifespan=attributes[6]
-        self.canEatMeat=attributes[7]
+        self.canEatMeat=attributes[8]
         self.x=x
         self.y=y
-        self.species=attributes[8]
+        self.species=attributes[9]
         self.age=0
         
     def draw(self):
@@ -138,7 +139,7 @@ def drawGrid():
         pygame.draw.rect(win,(0,0,0),(1,y*9,899,1))
 drawGrid()
 pygame.display.update()
-speciesList=[species(1,4,2,0,1,1,6,False,(210,180,140)),species(3,3,6,3,3,3,24,True,(255,128,0))]
+speciesList=[species(1,4,2,0,1,1,0,6,False,(210,180,140)),species(3,3,6,3,3,3,0,24,True,(255,128,0))]
 for i in speciesList:
     if i.canEatMeat:
         i.updateKillList()
